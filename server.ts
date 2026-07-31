@@ -81,8 +81,7 @@ async function safeGenerateContent(
       params.primaryModel || 'gemini-3.6-flash',
       'gemini-flash-latest',
       'gemini-3.1-flash-lite',
-      'gemini-2.5-flash',
-      'gemini-2.0-flash',
+      'gemini-3.1-pro-preview',
     ];
 
     for (const model of modelsToTry) {
@@ -101,7 +100,7 @@ async function safeGenerateContent(
           };
         }
       } catch (err: any) {
-        // Silently move to fallback model or offline knowledge base
+        console.error(`Gemini model ${model} error:`, err?.message || err);
       }
     }
   }
@@ -114,6 +113,44 @@ async function safeGenerateContent(
     modelUsed: 'offline-knowledge-base',
     isFallback: true,
   };
+}
+
+// Helper to format chat history strictly for Gemini API requirements:
+// 1. Must start with role 'user'
+// 2. Roles must strictly alternate: 'user' -> 'model' -> 'user' -> 'model'
+function formatChatContents(chatHistory: any[], currentMessage: string) {
+  const formatted: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
+
+  if (Array.isArray(chatHistory)) {
+    for (const msg of chatHistory) {
+      if (!msg || !msg.text) continue;
+      const role = msg.sender === 'user' ? 'user' : 'model';
+
+      // Skip leading AI/model greetings
+      if (formatted.length === 0 && role === 'model') {
+        continue;
+      }
+
+      // Prevent consecutive duplicate roles
+      if (formatted.length > 0 && formatted[formatted.length - 1].role === role) {
+        formatted[formatted.length - 1].parts[0].text += '\n' + msg.text;
+      } else {
+        formatted.push({ role, parts: [{ text: msg.text }] });
+      }
+    }
+  }
+
+  // Safely incorporate current user message
+  if (formatted.length > 0 && formatted[formatted.length - 1].role === 'user') {
+    const lastText = formatted[formatted.length - 1].parts[0].text;
+    if (!lastText.endsWith(currentMessage)) {
+      formatted[formatted.length - 1].parts[0].text += '\n' + currentMessage;
+    }
+  } else {
+    formatted.push({ role: 'user', parts: [{ text: currentMessage }] });
+  }
+
+  return formatted;
 }
 
 // Default system persona prompt
@@ -149,16 +186,7 @@ app.post('/api/ai/chat', async (req, res) => {
     const ai = getAiClient();
     const systemInstruction = getSystemPersonaPrompt(userProfile);
 
-    const contents = [
-      ...(chatHistory || []).map((msg: any) => ({
-        role: msg.sender === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.text }],
-      })),
-      {
-        role: 'user',
-        parts: [{ text: message }],
-      },
-    ];
+    const contents = formatChatContents(chatHistory, message || '');
 
     const result = await safeGenerateContent(ai, {
       primaryModel: 'gemini-3.6-flash',
@@ -172,6 +200,7 @@ app.post('/api/ai/chat', async (req, res) => {
 
     res.json({ text: result.text, isFallback: result.isFallback });
   } catch (error: any) {
+    console.error('Chat endpoint error:', error);
     const fallbackText = getChatResponseOffline(req.body.message || '', req.body.userProfile);
     res.json({ text: fallbackText, isFallback: true });
   }
