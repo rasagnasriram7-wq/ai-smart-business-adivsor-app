@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, CostEstimateResult } from '../../types';
 import { Calculator, Sparkles, Building, Info, CheckCircle2 } from 'lucide-react';
 import { formatCurrencyINR } from '../../utils/storage';
+import { getApiUrl } from '../../config';
 
 interface CostEstimatorToolProps {
   userProfile: UserProfile;
@@ -18,7 +19,7 @@ export const CostEstimatorTool: React.FC<CostEstimatorToolProps> = ({ userProfil
   const handleEstimate = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/ai/cost-estimator', {
+      const res = await fetch(getApiUrl('/api/ai/cost-estimator'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessType, city, scale, userProfile }),

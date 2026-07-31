@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { UserProfile } from '../types';
 import { Sparkles, CheckCircle2, Clock, Wrench, FileText, Users, Megaphone, Lightbulb, X } from 'lucide-react';
+import { getApiUrl } from '../config';
 
 interface ExecutionPlanModalProps {
   businessTitle: string;
@@ -22,7 +23,7 @@ export const ExecutionPlanModal: React.FC<ExecutionPlanModalProps> = ({
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/ai/execution-plan', {
+        const res = await fetch(getApiUrl('/api/ai/execution-plan'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ businessTitle, userProfile }),

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, BusinessPlanResult } from '../types';
 import { FileText, Sparkles, Download, Copy, Check, Printer, ShieldAlert } from 'lucide-react';
+import { getApiUrl } from '../config';
 
 interface BusinessPlanViewProps {
   userProfile: UserProfile;
@@ -18,7 +19,7 @@ export const BusinessPlanView: React.FC<BusinessPlanViewProps> = ({ userProfile 
   const handleGeneratePlan = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/ai/business-plan', {
+      const res = await fetch(getApiUrl('/api/ai/business-plan'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessName, category, userProfile }),

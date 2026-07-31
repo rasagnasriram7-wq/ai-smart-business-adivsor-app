@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, IncomeGoalPlanResult } from '../../types';
 import { Target, Sparkles, TrendingUp, Users, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { formatCurrencyINR } from '../../utils/storage';
+import { getApiUrl } from '../../config';
 
 interface IncomeGoalPlannerToolProps {
   userProfile: UserProfile;
@@ -15,7 +16,7 @@ export const IncomeGoalPlannerTool: React.FC<IncomeGoalPlannerToolProps> = ({ us
   const handleCalculateGoal = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/ai/income-goal-plan', {
+      const res = await fetch(getApiUrl('/api/ai/income-goal-plan'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ targetIncomeAmount: targetIncome, userProfile }),

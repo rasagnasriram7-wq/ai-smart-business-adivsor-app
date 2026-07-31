@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, BusinessIdea } from '../../types';
 import { Lightbulb, Sparkles, AlertTriangle, TrendingUp, Layers, ChevronRight, CheckCircle2, ArrowRight } from 'lucide-react';
 import { formatCurrencyINR } from '../../utils/storage';
+import { getApiUrl } from '../../config';
 
 interface StartupIdeasToolProps {
   userProfile: UserProfile;
@@ -25,7 +26,7 @@ export const StartupIdeasTool: React.FC<StartupIdeasToolProps> = ({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/ai/startup-ideas', {
+      const res = await fetch(getApiUrl('/api/ai/startup-ideas'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

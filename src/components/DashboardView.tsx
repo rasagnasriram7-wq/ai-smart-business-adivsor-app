@@ -32,6 +32,7 @@ import {
   PieChart as PieIcon,
 } from 'lucide-react';
 import { formatCurrencyINR } from '../utils/storage';
+import { getApiUrl } from '../config';
 
 interface DashboardViewProps {
   userProfile: UserProfile;
@@ -64,7 +65,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const fetchDailyTip = async () => {
     setLoadingTip(true);
     try {
-      const res = await fetch('/api/ai/daily-mentor-tip', {
+      const res = await fetch(getApiUrl('/api/ai/daily-mentor-tip'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userProfile }),

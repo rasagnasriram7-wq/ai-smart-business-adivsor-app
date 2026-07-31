@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, LocationSuggestion } from '../../types';
 import { MapPin, Sparkles, Building2, Compass, AlertCircle } from 'lucide-react';
+import { getApiUrl } from '../../config';
 
 interface LocationAdvisorToolProps {
   userProfile: UserProfile;
@@ -16,7 +17,7 @@ export const LocationAdvisorTool: React.FC<LocationAdvisorToolProps> = ({ userPr
   const handleRecommend = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/ai/best-locations', {
+      const res = await fetch(getApiUrl('/api/ai/best-locations'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessType, city, userProfile }),

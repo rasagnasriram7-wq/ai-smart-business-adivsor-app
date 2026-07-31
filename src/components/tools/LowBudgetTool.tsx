@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile } from '../../types';
 import { Wallet, Sparkles, Clock, CheckCircle, TrendingUp } from 'lucide-react';
 import { formatCurrencyINR } from '../../utils/storage';
+import { getApiUrl } from '../../config';
 
 interface LowBudgetToolProps {
   userProfile: UserProfile;
@@ -18,7 +19,7 @@ export const LowBudgetTool: React.FC<LowBudgetToolProps> = ({ userProfile }) => 
     setSelectedBudget(amount);
     setLoading(true);
     try {
-      const res = await fetch('/api/ai/low-budget-ideas', {
+      const res = await fetch(getApiUrl('/api/ai/low-budget-ideas'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ budgetAmount: amount, userProfile }),

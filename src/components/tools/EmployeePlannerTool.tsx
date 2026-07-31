@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, EmployeePlanResult } from '../../types';
 import { Users, Sparkles, UserCheck, DollarSign, Briefcase } from 'lucide-react';
 import { formatCurrencyINR } from '../../utils/storage';
+import { getApiUrl } from '../../config';
 
 interface EmployeePlannerToolProps {
   userProfile: UserProfile;
@@ -17,7 +18,7 @@ export const EmployeePlannerTool: React.FC<EmployeePlannerToolProps> = ({ userPr
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/ai/employee-plan', {
+      const res = await fetch(getApiUrl('/api/ai/employee-plan'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessType, monthlyTargetRevenue: targetRevenue, userProfile }),

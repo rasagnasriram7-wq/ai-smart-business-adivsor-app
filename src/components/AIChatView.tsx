@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile, ChatMessage } from '../types';
 import { Sparkles, Send, Mic, MicOff, Volume2, VolumeX, Trash2, Copy, Check, Lightbulb, AlertCircle } from 'lucide-react';
 import { getStoredChatHistory, saveChatHistory } from '../utils/storage';
+import { getApiUrl } from '../config';
 
 interface AIChatViewProps {
   userProfile: UserProfile;
@@ -167,7 +168,7 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
     setLoading(true);
 
     try {
-      const res = await fetch('/api/ai/chat', {
+      const res = await fetch(getApiUrl('/api/ai/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

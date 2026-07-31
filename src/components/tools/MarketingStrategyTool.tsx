@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, MarketingStrategyResult } from '../../types';
 import { Megaphone, Sparkles, Instagram, Facebook, MessageSquare, MapPin, Award, HeartHandshake } from 'lucide-react';
+import { getApiUrl } from '../../config';
 
 interface MarketingStrategyToolProps {
   userProfile: UserProfile;
@@ -16,7 +17,7 @@ export const MarketingStrategyTool: React.FC<MarketingStrategyToolProps> = ({ us
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/ai/marketing-strategy', {
+      const res = await fetch(getApiUrl('/api/ai/marketing-strategy'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessType, targetAudience, userProfile }),
