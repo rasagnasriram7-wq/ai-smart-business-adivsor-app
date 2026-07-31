@@ -1,0 +1,8 @@
+{
+  "name": "Remix AI Smart Business Advisor",
+  "description": "AI-powered mobile business mentor providing personalized startup recommendations, cost estimations, P\u0026L calculations, employee planning, marketing strategies, and execution roadmaps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
